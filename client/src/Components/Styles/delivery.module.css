@@ -1,0 +1,31 @@
+
+.table{
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    border-collapse: collapse;
+    text-align: left;
+}
+.list {
+    display: flex;
+    flex-direction: row;
+    list-style:none; 
+    text-align: left;
+    overflow-y: auto;
+}
+
+.list li {
+    padding: 10px;
+    width: 150px;
+}
+
+.list li {
+    border: 1px solid black;
+}
+
+.list:hover {
+    background-color: lightgray ;
+    color: white;
+}
+
+

@@ -6,6 +6,10 @@ const morgan = require('morgan');
 //Instancio servidor de express
 const server = express();
 
+//Importo libreria para crear IDs unicos.
+const { v4 : uuidv4 } = require('uuid')
+
+
 server.name = 'API kiwibot Challenge';
 
 server.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
@@ -50,15 +54,22 @@ server.get('/' , async (req, res) => {
 
 
 server.post('/deliveries' , async (req, res) => {
-     let { date, state, pickup, dropoff, zone_id} = req.body;
+     let { pickup_lat,pickup_lon,  dropoff_lat , dropoff_lon, zone_id} = req.body;
+     
      console.log(req.body)
      const delivery = {
-         creation_date : date,
-         state : state,
-         pickup : pickup,
-         dropoff: dropoff,
-         zone_id : zone_id,
-         
+         id : uuidv4(),
+         creation_date : new Date (),
+         state : 'Pending',
+         pickup : {
+             pickup_lat : pickup_lat ,
+             pickup_lon: pickup_lon
+            },
+         dropoff: {
+             dropoff_lat : dropoff_lat,
+             dropoff_lon : dropoff_lon
+            },
+         zone_id : zone_id, 
      }
      console.log(delivery)
     try {
@@ -85,6 +96,21 @@ server.post('/bots' , async (req, res) => {
    } catch (err) {
     return res.status(404).send(err);
    }
+})
+
+server.put('/deliveries' , async (req,res) => {
+    let { state } = req.body;
+    let id = 'faec9b6d-335e-4287-91e5-f1c44fa8f2dd'
+    const deliveryRef = await deliveries.where('id', '==', id).get()
+    console.log(deliveryRef)
+    const update = deliveryRef.docs.map(e => {
+        return {
+            id: e.ref.id,
+            state: e.data().state,
+        }
+    });
+    console.log(update)
+    res.send(update)
 })
 
 

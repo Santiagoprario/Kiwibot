@@ -1,0 +1,61 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    border: 2px solid black;
+    margin-top: 5%;
+}
+.deliveries {
+    display: flex;
+    flex-direction: column; 
+}
+
+.bots {
+   border: 1px solid black;
+   width: 100%;
+}
+
+.header {
+    background-color: burlywood;
+}
+
+
+
+.filters {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 0 10px 0 10px;
+}
+
+button{
+      height: 50px;
+      width: 200px;
+      border: transparent;
+      border-radius: 30px;
+      background-color: royalblue;
+      color: white;
+      font-size: 18px;
+}
+button:hover{
+    background-color: white;
+    color: royalblue;
+    border: 1px solid royalblue;
+}
+
+.filterState {
+    width: 200px;
+}
+
+.list{
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-left: -40px;
+}
+
+
+
+
+
