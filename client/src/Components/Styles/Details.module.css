@@ -1,0 +1,18 @@
+.container {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.header {
+    display: block;
+    text-align: left;
+    justify-content: left;
+    
+    border-bottom: 2px solid gray;
+    
+}
+
+.map {
+    display: block;
+    justify-content: center;
+}

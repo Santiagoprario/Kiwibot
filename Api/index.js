@@ -99,16 +99,9 @@ server.post('/bots' , async (req, res) => {
 })
 
 server.put('/deliveries' , async (req,res) => {
-    let { state } = req.body;
-    let id = 'faec9b6d-335e-4287-91e5-f1c44fa8f2dd'
+    let { id , state } = req.body;
     const deliveryRef = await deliveries.where('id', '==', id).get()
-    console.log(deliveryRef)
-    const update = deliveryRef.docs.map(e => {
-        return {
-            id: e.ref.id,
-            state: e.data().state,
-        }
-    });
+    const update = await deliveryRef.update({ state : state });
     console.log(update)
     res.send(update)
 })

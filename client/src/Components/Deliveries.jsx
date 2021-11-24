@@ -4,6 +4,7 @@ import styles from './Styles/Deliveries.module.css';
 import Axios  from 'axios';
 import axios from '../../../Api/node_modules/axios';
 import Delivery from './Delivery';
+import Details from './Details';
 
 function Deliveries() {
     
@@ -12,6 +13,11 @@ function Deliveries() {
         filteredDeliveries : false,
         filter : '',
     });
+
+    const [details,setDetails]= useState({
+        order : false,
+        show: false,
+    })
     
     const getInfo = () => {
       if (state.filter === 'asc') {
@@ -59,26 +65,36 @@ function Deliveries() {
     const filterChange = function(e) {
         filterState(e.target.value)
       }
-
-
-
-
  
-    
+    const searchId = (id) => {
+        let orderId = state.deliveries.filter(a => a.id.stringValue === id)
+        setDetails({
+            ...details,
+            order: orderId[0],
+            show: true,
+        })
+        return details
+    }
     
     return (
         <div className={styles.container}>
           <div className={styles.deliveries}>
               <h4>Deliveries</h4>
               <Delivery className={styles.header}/>
-              <ul className={styles.list}>{
+              <ul className={styles.list}
+                  onClick={(e) => {
+                      searchId(e.target.innerText)
+                      console.log(details.order)
+                    }} 
+              >{
                                     state.filteredDeliveries ? state.filteredDeliveries?.map(d => <Delivery
                                         key={d?.id.stringValue}
                                         id={d?.id.stringValue}
                                         state={d?.state.stringValue}
                                         date={d?.creation_date.timestampValue.seconds}
                                         pickup={d?.pickup}
-                                        dropoff={d?.dropoff} 
+                                        dropoff={d?.dropoff}
+                                        
                                     />)
                                     : state.deliveries?.map(d => <Delivery
                                         key={d?.id.stringValue}
@@ -102,8 +118,15 @@ function Deliveries() {
                 </select>
                 </section>          
          </div> 
-          <div className={styles.bots}>
-              Bots Availables
+          <div className={styles.bots}> 
+            <h2>Detalles de Ordenes</h2>
+            {details.show ? <Details key={details.order?.id.stringValue}
+                                        id={details.order?.id.stringValue}
+                                        state={details.order?.state.stringValue}
+                                        date={details.order?.creation_date?.timestampValue.seconds}
+                                        pickup={details.order?.pickup}
+                                        dropoff={details.order?.dropoff} /> : <h4>Por favor, seleccione sobre el numero de Orden para ver los detalles</h4>}
+
           </div>
         </div>
     )
