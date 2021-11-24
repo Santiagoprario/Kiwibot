@@ -24,6 +24,7 @@ server.use((req, res, next) => {
   next();
 });
 
+const {deliveries, bots} = require('./firestore.js')
 
 server.use((err, req, res, next) => { 
   const status = err.status || 500;
@@ -32,14 +33,8 @@ server.use((err, req, res, next) => {
   res.status(status).send(message);
 });
 
-
-const {deliveries, bots} = require('./firestore.js')
-
-
-
 server.get('/' , async (req, res) => {
     const snapshot = await deliveries.get();
-    console.log(snapshot)
     let deliveriesArray = [];
     snapshot.forEach(doc => {
         console.log(doc.id, '=>', doc.data());
@@ -52,11 +47,34 @@ server.get('/' , async (req, res) => {
             }    
          })
 
+server.get('/deliveries:id' , async (req, res) => {
+    let { id } = req.query
+    console.log(id)
+    const deliveryRef = await deliveries.where('id', '==', id).get()
+    console.log(deliveryRef)
+    if (!deliveryRef) {
+        res.send('No such document!');
+      } else {
+        res.json(deliveryRef)
+            }    
+         })
+
+ server.get('/bots' , async (req, res) => {
+    const snapshot = await bots.get();
+    let botsArray = [];
+    snapshot.forEach(doc => {
+        botsArray.push(doc)
+      });
+        if (!botsArray) {
+        res.send('No such document!');
+          } else {
+        res.json(botsArray)
+            }    
+         })        
+
 
 server.post('/deliveries' , async (req, res) => {
      let { pickup_lat,pickup_lon,  dropoff_lat , dropoff_lon, zone_id} = req.body;
-     
-     console.log(req.body)
      const delivery = {
          id : uuidv4(),
          creation_date : new Date (),
@@ -71,7 +89,6 @@ server.post('/deliveries' , async (req, res) => {
             },
          zone_id : zone_id, 
      }
-     console.log(delivery)
     try {
      let created = await deliveries.add(delivery)
      console.log('Added document with ID: ' , created.id)
@@ -82,10 +99,14 @@ server.post('/deliveries' , async (req, res) => {
 })
 
 server.post('/bots' , async (req, res) => {
-    let { status, location , zone_id} = req.body;
+    let { location_lat , location_lon , zone_id } = req.body;
     const bot = {
-        status : status,
-        location : location,
+        id: uuidv4(),
+        status : "Available",
+        location : {
+            dropoff_lat: location_lat,
+		    dropoff_lon: location_lon
+        },
         zone_id : zone_id, 
     }
     console.log(bot)
