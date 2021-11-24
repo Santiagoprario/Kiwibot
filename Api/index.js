@@ -120,11 +120,57 @@ server.post('/bots' , async (req, res) => {
 })
 
 server.put('/deliveries' , async (req,res) => {
-    let { id , state } = req.body;
+  let { id , idBot , state} = req.body;
+    if (state === 'Pending') { 
     const deliveryRef = await deliveries.where('id', '==', id).get()
-    const update = await deliveryRef.update({ state : state });
-    console.log(update)
-    res.send(update)
+    const deliveryOrder = deliveryRef.docs.map(e => {
+      return {
+          id: e.ref.id,
+          state: e.data().state,
+      }
+    });
+    console.log(deliveryOrder)
+    const update = await deliveries.doc(deliveryOrder[0].id).update({ state : 'Assigned' })
+    return res.json(update )}
+    else if (state === 'Assigned') {
+      let { id , idBot , state} = req.body;
+      const deliveryRef = await deliveries.where('id', '==', id).get()
+      const deliveryOrder = deliveryRef.docs.map(e => {
+        return {
+            id: e.ref.id,
+            state: e.data().state,
+        }
+      });
+      console.log(deliveryOrder)
+      const update = await deliveries.doc(deliveryOrder[0].id).update({ state : 'In_transit' })
+      return res.json(update )
+    }
+    else if (state === 'In_transit') {
+      let { id , idBot , state} = req.body;
+      const deliveryRef = await deliveries.where('id', '==', id).get()
+      const deliveryOrder = deliveryRef.docs.map(e => {
+        return {
+            id: e.ref.id,
+            state: e.data().state,
+        }
+      });
+      console.log(deliveryOrder)
+      const update = await deliveries.doc(deliveryOrder[0].id).update({ state : 'Delivered' })
+      return res.json(update )
+    }
+    else if (state === 'Delivered') {
+      res.json({msg: 'No se puede cambiar esta orden ya que ha sido entregada'})
+    }
+    // const botRef = await bots.where('id', '==', idBot).get()
+    // console.log(botRef.docs)
+    // const botUpdate = botRef.docs.map(e => {
+    //   return {
+    //     id: e.r.id,
+    //     status: e.data().status,
+    //   }
+    // })
+    // const updateBot = await bots.doc(botUpdate[0].id).update({ status : 'Busy' })
+    
 })
 
 

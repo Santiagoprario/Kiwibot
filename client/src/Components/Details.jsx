@@ -12,6 +12,7 @@ function Details({ id , date , state ,pickup,  dropoff}) {
 
     })
 
+
     const [selectedBot , setSelectedBot] = useState()
 
     let showDate = date * 1000;
@@ -24,16 +25,12 @@ function Details({ id , date , state ,pickup,  dropoff}) {
     let dropoff_lat = dropoff?.mapValue.fields.dropoff_lat.stringValue;
     let dropoff_lon = dropoff?.mapValue.fields.dropoff_lon.stringValue;
 
-   const putState = () => {
-      if(state === 'Pending') {
-        let sendOrder = {
-              id,
-              state:'Assigned',
-         }
-         axios.put('http://localhost:3001/deliveries' , sendOrder)
-             .then(response => console.log(response.data))
+ const putState = () => {
+      axios.put('http://localhost:3001/deliveries' , {selectedBot , id , state})
+       .then(response => console.log(response.data))
+       window.location.reload(false)
        } 
-   }
+   
 
    const showBots = () => {
      if(!bots) { 
@@ -80,10 +77,10 @@ function Details({ id , date , state ,pickup,  dropoff}) {
           {!selectedBot && state === 'Pending' ?   <p>Por favor seleccion un bot para Asignar</p> : ''}
          
           <div>
-            {state === 'Pending' ? <button onClick={showBots}>Ver Bots disponibles</button> : ''}
-            { state === 'Pending' ? <button value='Pending' onClick={(e) => putState(e.target.value)} >Asignar Viaje a Bot</button> : ''}
-            { state === 'Assigned' ? <button>Cambiar a En transito</button> : ''}
-            { state === 'In_transit' ? <button>Cambiar a Delivered</button> : ''}
+            { state === 'Pending'    ? <button onClick={showBots}>Ver Bots disponibles</button> : ''}
+            { state === 'Pending'    ? <button type='submit' onClick={putState} >Asignar Viaje a Bot</button> : ''}
+            { state === 'Assigned'   ? <button type='submit' onClick={putState} >Cambiar a En transito</button> : ''}
+            { state === 'In_transit' ? <button type='submit' onClick={putState} >Cambiar a Delivered</button> : ''}
             
           </div>
           <section onClick={(e) => {
@@ -96,7 +93,6 @@ function Details({ id , date , state ,pickup,  dropoff}) {
                                         state={d?.status.stringValue}
                                         pickup={d?.location}
                                         zone_id='1'
-                                        
                                     />) : ''}
           </section>
         </div>
