@@ -1,0 +1,17 @@
+.bots{
+   display: flex;
+   flex-direction: row;
+   justify-content: flex-start;
+   padding: auto;
+   font-size: 14px;
+}
+
+.bots:hover {
+    background-color: gray;
+}
+
+.bots p{
+    padding-left: 5%;
+    padding-right: 5%;
+    border: 1px solid black;
+}
