@@ -28,7 +28,7 @@ function Details({ id , date , state ,pickup,  dropoff}) {
  const putState = () => {
       axios.put('http://localhost:3001/deliveries' , {selectedBot , id , state})
        .then(response => console.log(response.data))
-       window.alert('Estado cambiado con exito!')
+       window.alert()
        window.location.reload(false)
        } 
    
